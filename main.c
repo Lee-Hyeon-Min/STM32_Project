@@ -103,27 +103,27 @@ int main(void)
   while (1)
   {
     /* USER CODE END WHILE */
-	  int box[3] = {0};
+	  int box[3] = {0}; // number 값을 이진수로 저장하기 위해 배열로 저장
 	  int number = rand() % 8;
 	  int Lock_Num1 = 0;
 	  int Lock_Num2 = 0;
 	  int Lock_Num3 = 0;
-	  for(int i = 0; i < 3;i++){
+	  for(int i = 0; i < 3;i++){ //10진수를 2진수로 만들기
 	  	box[i] = number % 2;
 	  	number /= 2;
 	  }
 
-	  if(HAL_GPIO_ReadPin(GPIOD, GPIO_PIN_3) == GPIO_PIN_SET){
+	  if(HAL_GPIO_ReadPin(GPIOD, GPIO_PIN_3) == GPIO_PIN_SET){   // 버튼 누르면 첫번째 값 1 대입
 		  Lock_Num1 = 1;
 	  }
 	  else{
-		  Lock_Num1 = 0 ;
+		  Lock_Num1 = 0 ; // 버튼 때면 첫번째 값 0 대입
 	  }
-	  if(HAL_GPIO_ReadPin(GPIOD, GPIO_PIN_4) == GPIO_PIN_SET){
+	  if(HAL_GPIO_ReadPin(GPIOD, GPIO_PIN_4) == GPIO_PIN_SET){ // 위와 동일
 	  	  Lock_Num2 = 1;
 	  }
 	  else{
-	  	  Lock_Num2 = 0 ;
+	  	  Lock_Num2 = 0 ; // 위와 동일
 	  }
 	  if(HAL_GPIO_ReadPin(GPIOD, GPIO_PIN_5) == GPIO_PIN_SET){
 	  	  Lock_Num3 = 1;
@@ -131,15 +131,15 @@ int main(void)
 	  else{
 	  	  Lock_Num3 = 0 ;
 	  }
-	  if(box[2] == Lock_Num3 && box[1] == Lock_Num2 && box[0] == Lock_Num1){
+	  if(box[2] == Lock_Num3 && box[1] == Lock_Num2 && box[0] == Lock_Num1){  // 버튼 눌렀을 때 모든 값이 다 같으면 축하 문구 출력
 		  memset(uart_buf,0,30);
 		  sprintf(uart_buf,"Congratulation!! PD = %d %d %d\r\n",box[2], box[1], box[0]);
 		  HAL_UART_Transmit_IT(&huart3,uart_buf,sizeof(uart_buf));
 		  HAL_Delay(5000);
 	  }
-	  else{
+	  else{ // 아니면 실패로 다시 시작
 		  memset(uart_buf,0,30);
-		  sprintf(uart_buf,"You Failed!! PD = %d %d %d\r\n", box[2], box[1], box[0]);
+		  sprintf(uart_buf,"You Failed!! PD = %d %d %d\r\n", box[2], box[1], box[0]); 
 		  HAL_UART_Transmit_IT(&huart3,uart_buf,sizeof(uart_buf));
 		  HAL_Delay(5000);
 	  }
