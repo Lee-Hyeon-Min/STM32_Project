@@ -102,6 +102,7 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   while (1)
   {
+    /* USER CODE END WHILE */
 	  int box[3] = {0};
 	  int number = rand() % 8;
 	  int Lock_Num1 = 0;
@@ -111,11 +112,39 @@ int main(void)
 	  	box[i] = number % 2;
 	  	number /= 2;
 	  }
-	      /* USER CODE END WHILE */
 
+	  if(HAL_GPIO_ReadPin(GPIOD, GPIO_PIN_3) == GPIO_PIN_SET){
+		  Lock_Num1 = 1;
+	  }
+	  else{
+		  Lock_Num1 = 0 ;
+	  }
+	  if(HAL_GPIO_ReadPin(GPIOD, GPIO_PIN_4) == GPIO_PIN_SET){
+	  	  Lock_Num2 = 1;
+	  }
+	  else{
+	  	  Lock_Num2 = 0 ;
+	  }
+	  if(HAL_GPIO_ReadPin(GPIOD, GPIO_PIN_5) == GPIO_PIN_SET){
+	  	  Lock_Num3 = 1;
+	  }
+	  else{
+	  	  Lock_Num3 = 0 ;
+	  }
+	  if(box[2] == Lock_Num3 && box[1] == Lock_Num2 && box[0] == Lock_Num1){
+		  memset(uart_buf,0,30);
+		  sprintf(uart_buf,"Congratulation!! PD = %d %d %d\r\n",box[2], box[1], box[0]);
+		  HAL_UART_Transmit_IT(&huart3,uart_buf,sizeof(uart_buf));
+		  HAL_Delay(5000);
+	  }
+	  else{
+		  memset(uart_buf,0,30);
+		  sprintf(uart_buf,"You Failed!! PD = %d %d %d\r\n", box[2], box[1], box[0]);
+		  HAL_UART_Transmit_IT(&huart3,uart_buf,sizeof(uart_buf));
+		  HAL_Delay(5000);
+	  }
+    /* USER CODE BEGIN 3 */
   }
-  /* USER CODE BEGIN 3 */
-
   /* USER CODE END 3 */
 }
 
@@ -265,7 +294,7 @@ static void MX_GPIO_Init(void)
   HAL_GPIO_WritePin(USB_PowerSwitchOn_GPIO_Port, USB_PowerSwitchOn_Pin, GPIO_PIN_RESET);
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(GPIOD, GPIO_PIN_2|GPIO_PIN_3|GPIO_PIN_4|GPIO_PIN_5, GPIO_PIN_RESET);
+  HAL_GPIO_WritePin(GPIOD, GPIO_PIN_3|GPIO_PIN_4|GPIO_PIN_5, GPIO_PIN_RESET);
 
   /*Configure GPIO pin : USER_Btn_Pin */
   GPIO_InitStruct.Pin = USER_Btn_Pin;
@@ -331,8 +360,8 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   HAL_GPIO_Init(USB_VBUS_GPIO_Port, &GPIO_InitStruct);
 
-  /*Configure GPIO pins : PD2 PD3 PD4 PD5 */
-  GPIO_InitStruct.Pin = GPIO_PIN_2|GPIO_PIN_3|GPIO_PIN_4|GPIO_PIN_5;
+  /*Configure GPIO pins : PD3 PD4 PD5 */
+  GPIO_InitStruct.Pin = GPIO_PIN_3|GPIO_PIN_4|GPIO_PIN_5;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
